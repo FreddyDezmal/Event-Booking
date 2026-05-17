@@ -62,10 +62,13 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    maxAge: parseInt(process.env.SESSION_MAX_AGE) || 86400000, // 24h
     sameSite: 'lax',
+    maxAge: parseInt(process.env.SESSION_MAX_AGE) || 86400000, // 24h
   },
+  proxy: true, // trust first proxy (for secure cookies behind proxies/load balancers)
 }));
+const app = express();
+app.set('trust proxy', 1);
 
 app.use(flash());
 
@@ -114,6 +117,6 @@ app.use((err, req, res, next) => {
 // ── Start ─────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Advanced Events running on http://localhost:${PORT}`);
+  console.log(`✅ Advanced Events running on port ${PORT}`);
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
 });

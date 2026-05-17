@@ -1,6 +1,9 @@
 {
   "name": "advanced-events",
   "version": "1.0.0",
+  "engines": {
+  "node": "20.x"
+  },
   "description": "Smart Event Management & Ticketing Platform for Advanced Events (Pty) Ltd",
   "main": "server.js",
   "scripts": {
