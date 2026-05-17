@@ -1,0 +1,201 @@
+<!-- views/bookings/new.ejs -->
+<div class="page-header">
+  <div class="container">
+    <a href="/events/<%= event.slug %>" class="page-header__back">← Back to Event</a>
+    <h1 class="page-header__title">Book Tickets</h1>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="booking-form-layout">
+
+      <!-- Compute remaining tickets safely -->
+      <%
+        const remaining = Math.max(
+          0,
+          (event.ticketCapacity || 0) - (event.totalBookings || 0)
+        );
+      %>
+
+      <!-- Booking Form -->
+      <div class="booking-form-card">
+        <h2>Your Ticket Details</h2>
+
+        <form action="/bookings" method="POST" class="form" novalidate id="bookingForm">
+          <input type="hidden" name="eventId" value="<%= event._id %>" />
+
+          <div class="form__group">
+            <label class="form__label" for="quantity">Number of Tickets</label>
+
+            <div class="ticket-qty">
+              <button type="button" class="ticket-qty__btn" id="qtyMinus">−</button>
+
+              <input
+                type="number"
+                name="quantity"
+                id="quantity"
+                class="ticket-qty__input"
+                value="1"
+                min="1"
+                max="<%= remaining %>"
+                readonly
+              />
+
+              <button type="button" class="ticket-qty__btn" id="qtyPlus">+</button>
+            </div>
+
+            <small class="form__hint">
+              Max <%= remaining %> per booking
+            </small>
+          </div>
+
+          <hr class="form__divider" />
+
+          <div class="form__group">
+            <label class="form__label" for="attendeeName">Full Name</label>
+            <input
+              type="text"
+              name="attendeeName"
+              id="attendeeName"
+              class="form__input"
+              required
+              value="<%= user.firstName %> <%= user.lastName %>"
+              placeholder="Ticket holder name"
+            />
+          </div>
+
+          <div class="form__group">
+            <label class="form__label" for="attendeeEmail">Email Address</label>
+            <input
+              type="email"
+              name="attendeeEmail"
+              id="attendeeEmail"
+              class="form__input"
+              required
+              value="<%= user.email %>"
+              placeholder="For your booking confirmation"
+            />
+          </div>
+
+          <div class="form__group">
+            <label class="form__label" for="attendeePhone">
+              Phone Number <small>(optional)</small>
+            </label>
+            <input
+              type="tel"
+              name="attendeePhone"
+              id="attendeePhone"
+              class="form__input"
+              placeholder="+27 82 000 0000"
+            />
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <div class="order-summary__row">
+              <span>Price per ticket</span>
+              <span>R <%= event.ticketPrice.toLocaleString('en-ZA') %></span>
+            </div>
+
+            <div class="order-summary__row">
+              <span>Quantity</span>
+              <span id="summaryQty">1</span>
+            </div>
+
+            <div class="order-summary__row order-summary__row--total">
+              <span>Total</span>
+              <span id="summaryTotal">
+                R <%= event.ticketPrice.toLocaleString('en-ZA') %>
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn--primary btn--full btn--lg"
+            id="bookBtn"
+          >
+            Confirm Booking →
+          </button>
+
+          <p class="booking-form-card__note">
+            🔒 Secure booking · Instant confirmation · Free cancellation
+          </p>
+        </form>
+      </div>
+
+      <!-- Event Summary -->
+      <div class="booking-event-summary">
+        <img
+          src="<%= event.image || '/images/default-event.jpg' %>"
+          alt="<%= event.title %>"
+          class="booking-event-summary__img"
+        />
+
+        <div class="booking-event-summary__body">
+          <span class="event-card__category"><%= event.category %></span>
+
+          <h3><%= event.title %></h3>
+
+          <p>
+            📅 <%= new Date(event.date).toLocaleDateString('en-ZA', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            }) %>
+          </p>
+
+          <p>
+            📍 <%= event.venue.name %>, <%= event.venue.city %>
+          </p>
+
+          <p>
+            🎟 <%= remaining %> tickets remaining
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const price = <%= event.ticketPrice %>;
+  const maxQty = <%= Math.min(remaining, 10) %>;
+
+  const qtyInput = document.getElementById('quantity');
+  const summaryQty = document.getElementById('summaryQty');
+  const summaryTotal = document.getElementById('summaryTotal');
+
+  function updateSummary() {
+    const qty = Number(qtyInput.value || 1);
+    summaryQty.textContent = qty;
+    summaryTotal.textContent =
+      'R ' + (price * qty).toLocaleString('en-ZA');
+  }
+
+  document.getElementById('qtyPlus').addEventListener('click', () => {
+    const current = Number(qtyInput.value);
+
+    if (current < maxQty) {
+      qtyInput.value = current + 1;
+      updateSummary();
+    }
+  });
+
+  document.getElementById('qtyMinus').addEventListener('click', () => {
+    const current = Number(qtyInput.value);
+
+    if (current > 1) {
+      qtyInput.value = current - 1;
+      updateSummary();
+    }
+  });
+
+  document.getElementById('bookingForm').addEventListener('submit', function () {
+    document.getElementById('bookBtn').disabled = true;
+    document.getElementById('bookBtn').textContent = 'Processing…';
+  });
+</script>

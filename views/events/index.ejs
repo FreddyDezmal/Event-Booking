@@ -1,0 +1,81 @@
+<!-- views/events/index.ejs — Event Listing with Search/Filter -->
+<div class="page-header page-header--events">
+  <div class="container">
+    <h1 class="page-header__title">Browse Events</h1>
+    <p class="page-header__subtitle">Discover <%= total %> events across South Africa</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Search & Filter Bar -->
+    <form action="/events" method="GET" class="filter-bar" id="filterForm">
+      <div class="filter-bar__search">
+        <input
+          type="text"
+          name="q"
+          value="<%= query.q || '' %>"
+          placeholder="Search events…"
+          class="filter-bar__input"
+          autocomplete="off"
+        />
+        <button type="submit" class="filter-bar__search-btn">🔍</button>
+      </div>
+      <div class="filter-bar__filters">
+        <select name="category" class="filter-bar__select" onchange="this.form.submit()">
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat %>" <%= (query.category === cat || (!query.category && cat === 'All')) ? 'selected' : '' %>>
+              <%= cat %>
+            </option>
+          <% }) %>
+        </select>
+        <select name="date" class="filter-bar__select" onchange="this.form.submit()">
+          <option value="">Any Date</option>
+          <option value="today" <%= query.date === 'today' ? 'selected' : '' %>>Today</option>
+          <option value="this_week" <%= query.date === 'this_week' ? 'selected' : '' %>>This Week</option>
+          <option value="this_month" <%= query.date === 'this_month' ? 'selected' : '' %>>This Month</option>
+          <option value="upcoming" <%= query.date === 'upcoming' ? 'selected' : '' %>>All Upcoming</option>
+        </select>
+        <select name="availability" class="filter-bar__select" onchange="this.form.submit()">
+          <option value="">Any Availability</option>
+          <option value="available" <%= query.availability === 'available' ? 'selected' : '' %>>Available Only</option>
+        </select>
+        <% if (query.q || query.category || query.date || query.availability) { %>
+          <a href="/events" class="filter-bar__clear">Clear Filters ✕</a>
+        <% } %>
+      </div>
+    </form>
+
+    <!-- Results -->
+    <% if (events && events.length) { %>
+      <div class="events-grid">
+        <% events.forEach(event => { %>
+          <%- include('../partials/event-card', { event }) %>
+        <% }) %>
+      </div>
+
+      <!-- Pagination -->
+      <% if (totalPages > 1) { %>
+        <div class="pagination">
+          <% if (currentPage > 1) { %>
+            <a href="?<%= new URLSearchParams({...query, page: currentPage - 1}).toString() %>" class="pagination__btn">← Prev</a>
+          <% } %>
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="?<%= new URLSearchParams({...query, page: i}).toString() %>"
+               class="pagination__btn <%= i === currentPage ? 'pagination__btn--active' : '' %>"><%= i %></a>
+          <% } %>
+          <% if (currentPage < totalPages) { %>
+            <a href="?<%= new URLSearchParams({...query, page: currentPage + 1}).toString() %>" class="pagination__btn">Next →</a>
+          <% } %>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-state__icon">🎟</div>
+        <h3>No events found</h3>
+        <p>Try adjusting your search or filters.</p>
+        <a href="/events" class="btn btn--primary">View All Events</a>
+      </div>
+    <% } %>
+  </div>
+</section>

@@ -1,0 +1,120 @@
+<!-- views/index.ejs — Home Page -->
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero__bg"></div>
+  <div class="hero__content">
+    <span class="hero__eyebrow">South Africa's Premier Event Platform</span>
+    <h1 class="hero__title">
+      Discover &amp; Book<br/>
+      <em>Extraordinary</em> Events
+    </h1>
+    <p class="hero__subtitle">
+      From music festivals to tech conferences — find, book, and experience the moments that matter.
+    </p>
+    <div class="hero__actions">
+      <a href="/events" class="btn btn--primary btn--lg">Browse Events</a>
+      <% if (!user) { %>
+        <a href="/auth/register" class="btn btn--outline btn--lg">Get Started Free</a>
+      <% } %>
+    </div>
+    <!-- Quick Search -->
+    <form action="/events" method="GET" class="hero__search">
+      <input type="text" name="q" placeholder="Search events, venues, artists…" class="hero__search-input" autocomplete="off" />
+      <button type="submit" class="hero__search-btn">Search</button>
+    </form>
+  </div>
+  <div class="hero__scroll-hint">scroll ↓</div>
+</section>
+
+<!-- Stats Bar -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-bar__grid">
+      <div class="stats-bar__item">
+        <span class="stats-bar__num">500+</span>
+        <span class="stats-bar__label">Events Hosted</span>
+      </div>
+      <div class="stats-bar__item">
+        <span class="stats-bar__num">50K+</span>
+        <span class="stats-bar__label">Happy Attendees</span>
+      </div>
+      <div class="stats-bar__item">
+        <span class="stats-bar__num">100%</span>
+        <span class="stats-bar__label">Secure Bookings</span>
+      </div>
+      <div class="stats-bar__item">
+        <span class="stats-bar__num">24/7</span>
+        <span class="stats-bar__label">Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Events -->
+<% if (featuredEvents && featuredEvents.length) { %>
+<section class="section">
+  <div class="container">
+    <div class="section__header">
+      <h2 class="section__title">Featured Events</h2>
+      <a href="/events" class="section__link">View All →</a>
+    </div>
+    <div class="events-featured">
+      <% featuredEvents.forEach(event => { %>
+        <%- include('partials/event-card-featured', { event }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Upcoming Events -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section__header">
+      <h2 class="section__title">Upcoming Events</h2>
+      <a href="/events" class="section__link">See All →</a>
+    </div>
+    <% if (upcomingEvents && upcomingEvents.length) { %>
+      <div class="events-grid">
+        <% upcomingEvents.forEach(event => { %>
+          <%- include('partials/event-card', { event }) %>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <p>No upcoming events yet. Check back soon!</p>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="section">
+  <div class="container">
+    <h2 class="section__title">Browse by Category</h2>
+    <div class="categories-grid">
+      <% ['Music', 'Sports', 'Technology', 'Business', 'Arts', 'Food & Drink'].forEach(cat => { %>
+        <a href="/events?category=<%= encodeURIComponent(cat) %>" class="category-card">
+          <span class="category-card__label"><%= cat %></span>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-block">
+      <h2>Ready to Experience Something Amazing?</h2>
+      <p>Join thousands of South Africans discovering and booking events on Advanced Events.</p>
+      <div class="cta-block__actions">
+        <a href="/events" class="btn btn--primary btn--lg">Find Events</a>
+        <% if (!user) { %>
+          <a href="/auth/register" class="btn btn--outline btn--lg">Create Free Account</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>

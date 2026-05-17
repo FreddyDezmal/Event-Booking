@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | AE Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="admin-body">
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar__header">
+      <a href="/" class="admin-sidebar__logo">
+        <span class="nav__logo-mark">AE</span>
+        <span>Admin Panel</span>
+      </a>
+      <button class="admin-sidebar__toggle" id="sidebarToggle">✕</button>
+    </div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin/dashboard" class="admin-sidebar__link <%= title === 'Admin Dashboard' ? 'active' : '' %>">
+        <span class="admin-sidebar__icon">⬛</span> Dashboard
+      </a>
+      <a href="/admin/events" class="admin-sidebar__link <%= title.includes('Event') ? 'active' : '' %>">
+        <span class="admin-sidebar__icon">🎟</span> Events
+      </a>
+      <a href="/admin/bookings" class="admin-sidebar__link <%= title.includes('Booking') ? 'active' : '' %>">
+        <span class="admin-sidebar__icon">📋</span> Bookings
+      </a>
+      <a href="/admin/users" class="admin-sidebar__link <%= title.includes('User') ? 'active' : '' %>">
+        <span class="admin-sidebar__icon">👥</span> Users
+      </a>
+      <a href="/admin/enquiries" class="admin-sidebar__link <%= title.includes('Enquir') ? 'active' : '' %>">
+        <span class="admin-sidebar__icon">✉️</span> Enquiries
+      </a>
+      <div class="admin-sidebar__divider"></div>
+      <a href="/" class="admin-sidebar__link">
+        <span class="admin-sidebar__icon">↩</span> Public Site
+      </a>
+      <form action="/auth/logout" method="POST">
+        <button class="admin-sidebar__link admin-sidebar__logout">
+          <span class="admin-sidebar__icon">⏻</span> Sign Out
+        </button>
+      </form>
+    </nav>
+  </aside>
+
+  <div class="admin-layout">
+    <!-- Top bar -->
+    <header class="admin-topbar">
+      <button class="admin-topbar__menu" id="sidebarOpen">☰</button>
+      <div class="admin-topbar__title"><%= title %></div>
+      <div class="admin-topbar__user">
+        <span class="admin-topbar__badge">ADMIN</span>
+        <%= user ? user.firstName + ' ' + user.lastName : '' %>
+      </div>
+    </header>
+
+    <!-- Flash messages -->
+    <% if (success && success.length) { %>
+      <div class="admin-alert admin-alert--success"><%= success[0] %></div>
+    <% } %>
+    <% if (error && error.length) { %>
+      <div class="admin-alert admin-alert--error"><%= error[0] %></div>
+    <% } %>
+
+    <!-- Content -->
+    <main class="admin-content">
+      <%- body %>
+    </main>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

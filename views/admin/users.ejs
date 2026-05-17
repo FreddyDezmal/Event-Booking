@@ -1,0 +1,42 @@
+<!-- views/admin/users.ejs -->
+<div class="admin-page-header">
+  <h2>All Users</h2>
+  <span style="color:#6e6455;font-size:.88rem;"><%= users.length %> total users</span>
+</div>
+
+<div class="table-wrap">
+  <table class="table table--admin">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Joined</th>
+        <th>Last Login</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><strong><%= u.firstName %> <%= u.lastName %></strong></td>
+          <td><%= u.email %></td>
+          <td><%= u.phone || '—' %></td>
+          <td>
+            <span class="status-badge <%= u.role === 'admin' ? 'status-badge--confirmed' : 'status-badge--upcoming' %>">
+              <%= u.role %>
+            </span>
+          </td>
+          <td>
+            <span class="status-badge <%= u.isActive ? 'status-badge--confirmed' : 'status-badge--cancelled' %>">
+              <%= u.isActive ? 'active' : 'inactive' %>
+            </span>
+          </td>
+          <td><%= new Date(u.createdAt).toLocaleDateString('en-ZA') %></td>
+          <td><%= u.lastLogin ? new Date(u.lastLogin).toLocaleDateString('en-ZA') : 'Never' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,35 @@
+<!-- views/partials/event-card.ejs -->
+<article class="event-card">
+  <a href="/events/<%= event.slug %>" class="event-card__img-link">
+    <img src="<%= event.image || '/images/default-event.jpg' %>" alt="<%= event.title %>" class="event-card__img" loading="lazy" />
+    <span class="event-card__category"><%= event.category %></span>
+    <% if (event.ticketsRemaining === 0) { %>
+      <span class="event-card__badge event-card__badge--sold-out">Sold Out</span>
+    <% } else if (event.ticketsRemaining <= 10) { %>
+      <span class="event-card__badge event-card__badge--low">Only <%= event.ticketsRemaining %> left!</span>
+    <% } %>
+  </a>
+  <div class="event-card__body">
+    <div class="event-card__meta">
+      <span class="event-card__date">
+        📅 <%= new Date(event.date).toLocaleDateString('en-ZA', { day:'numeric', month:'short', year:'numeric' }) %>
+      </span>
+      <span class="event-card__venue">📍 <%= event.venue?.city || 'TBC' %></span>
+    </div>
+    <h3 class="event-card__title">
+      <a href="/events/<%= event.slug %>"><%= event.title %></a>
+    </h3>
+    <div class="event-card__footer">
+      <span class="event-card__price">
+        <% if (event.ticketPrice === 0) { %>
+          Free
+        <% } else { %>
+          R <%= event.ticketPrice.toLocaleString('en-ZA') %>
+        <% } %>
+      </span>
+      <a href="/events/<%= event.slug %>" class="btn btn--sm <%= event.ticketsRemaining === 0 ? 'btn--disabled' : 'btn--primary' %>">
+        <%= event.ticketsRemaining === 0 ? 'Sold Out' : 'Book Now' %>
+      </a>
+    </div>
+  </div>
+</article>

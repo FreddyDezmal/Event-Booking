@@ -1,0 +1,80 @@
+<!-- views/admin/events/index.ejs -->
+<div class="admin-page-header">
+  <h2>Manage Events</h2>
+  <a href="/admin/events/new" class="btn btn--primary">+ Create Event</a>
+</div>
+
+<!-- Filter Bar -->
+<form method="GET" class="admin-filter-bar">
+  <select name="status" class="form__input form__input--sm" onchange="this.form.submit()">
+    <option value="">All Statuses</option>
+    <option value="upcoming" <%= query.status === 'upcoming' ? 'selected' : '' %>>Upcoming</option>
+    <option value="active" <%= query.status === 'active' ? 'selected' : '' %>>Active</option>
+    <option value="sold_out" <%= query.status === 'sold_out' ? 'selected' : '' %>>Sold Out</option>
+    <option value="cancelled" <%= query.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+  </select>
+  <select name="category" class="form__input form__input--sm" onchange="this.form.submit()">
+    <option value="">All Categories</option>
+    <% ['Music', 'Sports', 'Technology', 'Business', 'Arts', 'Food & Drink', 'Health', 'Education', 'Community', 'Other'].forEach(cat => { %>
+      <option value="<%= cat %>" <%= query.category === cat ? 'selected' : '' %>><%= cat %></option>
+    <% }) %>
+  </select>
+</form>
+
+<div class="table-wrap">
+  <table class="table table--admin">
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Category</th>
+        <th>Date</th>
+        <th>Tickets</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% events.forEach(event => { %>
+        <tr>
+          <td>
+            <div class="admin-event-cell">
+              <img src="<%= event.image || '/images/default-event.jpg' %>" alt="" class="admin-event-cell__img" />
+              <div>
+                <strong><%= event.title %></strong>
+                <small><%= event.venue?.city %></small>
+              </div>
+            </div>
+          </td>
+          <td><%= event.category %></td>
+          <td><%= new Date(event.date).toLocaleDateString('en-ZA') %></td>
+          <td>
+            <span class="<%= event.ticketsRemaining === 0 ? 'text--danger' : event.ticketsRemaining <= 10 ? 'text--warning' : '' %>">
+              <%= event.ticketsRemaining %>/<%= event.ticketCapacity %>
+            </span>
+          </td>
+          <td>R <%= event.ticketPrice.toLocaleString('en-ZA') %></td>
+          <td><span class="status-badge status-badge--<%= event.status %>"><%= event.status.replace('_',' ') %></span></td>
+          <td class="admin-actions">
+            <a href="/events/<%= event.slug %>" class="btn btn--xs btn--outline" target="_blank">View</a>
+            <a href="/admin/events/<%= event._id %>/edit" class="btn btn--xs btn--primary">Edit</a>
+            <form action="/admin/events/<%= event._id %>?_method=DELETE" method="POST"
+                  onsubmit="return confirm('Cancel this event? This cannot be undone.')">
+              <button class="btn btn--xs btn--danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<% if (totalPages > 1) { %>
+  <div class="pagination">
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %><%= query.status ? '&status='+query.status : '' %>"
+         class="pagination__btn <%= i === currentPage ? 'pagination__btn--active' : '' %>"><%= i %></a>
+    <% } %>
+  </div>
+<% } %>

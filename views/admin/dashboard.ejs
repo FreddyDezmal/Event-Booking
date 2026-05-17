@@ -1,0 +1,137 @@
+<!-- views/admin/dashboard.ejs -->
+<div class="admin-dashboard">
+  <!-- Stats Grid -->
+  <div class="admin-stats">
+    <div class="admin-stat-card admin-stat-card--blue">
+      <div class="admin-stat-card__label">Total Users</div>
+      <div class="admin-stat-card__value"><%= stats.totalUsers.toLocaleString() %></div>
+      <div class="admin-stat-card__icon">👥</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card--green">
+      <div class="admin-stat-card__label">Total Bookings</div>
+      <div class="admin-stat-card__value"><%= stats.totalBookings.toLocaleString() %></div>
+      <div class="admin-stat-card__icon">🎟</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card--purple">
+      <div class="admin-stat-card__label">Total Revenue</div>
+      <div class="admin-stat-card__value">R <%= stats.totalRevenue.toLocaleString('en-ZA') %></div>
+      <div class="admin-stat-card__icon">💰</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card--orange">
+      <div class="admin-stat-card__label">Total Events</div>
+      <div class="admin-stat-card__value"><%= stats.totalEvents.toLocaleString() %></div>
+      <div class="admin-stat-card__icon">🎪</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card--red">
+      <div class="admin-stat-card__label">New Enquiries</div>
+      <div class="admin-stat-card__value"><%= stats.newEnquiries %></div>
+      <div class="admin-stat-card__icon">✉️</div>
+      <% if (stats.newEnquiries > 0) { %>
+        <a href="/admin/enquiries?status=new" class="admin-stat-card__link">View →</a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="admin-charts">
+    <div class="admin-chart-card">
+      <h3>Monthly Bookings (Last 6 Months)</h3>
+      <canvas id="bookingsChart" height="120"></canvas>
+    </div>
+    <div class="admin-chart-card">
+      <h3>Top Events by Bookings</h3>
+      <canvas id="eventsChart" height="120"></canvas>
+    </div>
+  </div>
+
+  <!-- Recent Bookings & Top Events -->
+  <div class="admin-tables">
+    <div class="admin-table-card">
+      <div class="admin-table-card__header">
+        <h3>Recent Bookings</h3>
+        <a href="/admin/bookings" class="btn btn--sm btn--outline">View All</a>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Event</th>
+              <th>User</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentBookings.forEach(b => { %>
+              <tr>
+                <td><code><%= b.bookingRef %></code></td>
+                <td><%= b.event?.title || '—' %></td>
+                <td><%= b.user?.firstName %> <%= b.user?.lastName %></td>
+                <td>R <%= b.totalPrice?.toLocaleString('en-ZA') %></td>
+                <td><%= new Date(b.createdAt).toLocaleDateString('en-ZA') %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-table-card">
+      <div class="admin-table-card__header">
+        <h3>Top Performing Events</h3>
+        <a href="/admin/events" class="btn btn--sm btn--outline">Manage</a>
+      </div>
+      <% topEvents.forEach((event, i) => { %>
+        <div class="admin-top-event">
+          <span class="admin-top-event__rank">#<%= i + 1 %></span>
+          <div class="admin-top-event__info">
+            <strong><%= event.title %></strong>
+            <span><%= event.category %> · <%= event.totalBookings %> bookings</span>
+          </div>
+          <div class="admin-top-event__revenue">R <%= (event.totalRevenue || 0).toLocaleString('en-ZA') %></div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Bookings Chart
+  const monthlyData = <%- bookingsByMonth %>;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  new Chart(document.getElementById('bookingsChart'), {
+    type: 'bar',
+    data: {
+      labels: monthlyData.map(d => months[d._id.month - 1] + ' ' + d._id.year),
+      datasets: [{
+        label: 'Bookings',
+        data: monthlyData.map(d => d.count),
+        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { color: '#9ca3af' } }, x: { ticks: { color: '#9ca3af' } } }
+    }
+  });
+
+  // Top Events Chart
+  new Chart(document.getElementById('eventsChart'), {
+    type: 'doughnut',
+    data: {
+      labels: <%- JSON.stringify(topEvents.map(e => e.title.substring(0,20))) %>,
+      datasets: [{
+        data: <%- JSON.stringify(topEvents.map(e => e.totalBookings)) %>,
+        backgroundColor: ['#6366f1','#22c55e','#f59e0b','#ef4444','#3b82f6'],
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af', padding: 10 } } }
+    }
+  });
+</script>

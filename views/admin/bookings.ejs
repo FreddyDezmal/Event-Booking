@@ -1,0 +1,51 @@
+<!-- views/admin/bookings.ejs -->
+<div class="admin-page-header">
+  <h2>All Bookings</h2>
+  <div class="admin-filter-bar">
+    <a href="/admin/bookings" class="btn btn--sm <%= !query.status ? 'btn--primary' : 'btn--outline' %>">All</a>
+    <% ['confirmed','pending','cancelled','refunded'].forEach(s => { %>
+      <a href="/admin/bookings?status=<%= s %>" class="btn btn--sm <%= query.status === s ? 'btn--primary' : 'btn--outline' %>"><%= s %></a>
+    <% }) %>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table class="table table--admin">
+    <thead>
+      <tr>
+        <th>Booking Ref</th>
+        <th>Event</th>
+        <th>Attendee</th>
+        <th>Tickets</th>
+        <th>Total</th>
+        <th>Booked On</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% bookings.forEach(b => { %>
+        <tr>
+          <td><code><%= b.bookingRef %></code></td>
+          <td><%= b.event?.title || '—' %></td>
+          <td>
+            <div><%= b.user?.firstName %> <%= b.user?.lastName %></div>
+            <small><%= b.user?.email %></small>
+          </td>
+          <td><%= b.quantity %></td>
+          <td>R <%= (b.totalPrice || 0).toLocaleString('en-ZA') %></td>
+          <td><%= new Date(b.createdAt).toLocaleDateString('en-ZA') %></td>
+          <td><span class="status-badge status-badge--<%= b.status %>"><%= b.status %></span></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<% if (totalPages > 1) { %>
+  <div class="pagination" style="margin-top:20px;">
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %><%= query.status ? '&status='+query.status : '' %>"
+         class="pagination__btn <%= i === currentPage ? 'pagination__btn--active' : '' %>"><%= i %></a>
+    <% } %>
+  </div>
+<% } %>

@@ -1,0 +1,27 @@
+<!-- views/auth/login.ejs -->
+<div class="auth-form">
+  <h1 class="auth-form__title">Welcome Back</h1>
+  <p class="auth-form__subtitle">Sign in to your Advanced Events account</p>
+
+  <form action="/auth/login" method="POST" class="form" novalidate>
+    <div class="form__group">
+      <label class="form__label" for="email">Email Address</label>
+      <input type="email" name="email" id="email" class="form__input" required autocomplete="email" placeholder="you@example.com" />
+    </div>
+    <div class="form__group">
+      <label class="form__label" for="password">
+        Password
+        <a href="#" class="form__label-link">Forgot password?</a>
+      </label>
+      <div class="form__input-wrap">
+        <input type="password" name="password" id="password" class="form__input" required autocomplete="current-password" placeholder="••••••••" />
+        <button type="button" class="form__eye" onclick="togglePassword('password', this)">👁</button>
+      </div>
+    </div>
+    <button type="submit" class="btn btn--primary btn--full btn--lg">Sign In</button>
+  </form>
+
+  <p class="auth-form__footer">
+    Don't have an account? <a href="/auth/register">Create one free →</a>
+  </p>
+</div>

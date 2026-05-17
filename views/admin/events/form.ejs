@@ -1,0 +1,122 @@
+<!-- views/admin/events/form.ejs -->
+<div class="admin-page-header">
+  <h2><%= event ? 'Edit Event' : 'Create New Event' %></h2>
+  <a href="/admin/events" class="btn btn--outline">← Back to Events</a>
+</div>
+
+<div class="admin-form-card">
+  <form
+    action="<%= event ? '/admin/events/' + event._id + '?_method=PUT' : '/admin/events' %>"
+    method="POST"
+    enctype="multipart/form-data"
+    class="form"
+    novalidate
+  >
+    <div class="form__section">
+      <h3>Basic Information</h3>
+      <div class="form__group">
+        <label class="form__label">Event Title *</label>
+        <input type="text" name="title" class="form__input" value="<%= event?.title || '' %>" required placeholder="e.g. Joburg Jazz Festival 2025" />
+      </div>
+      <div class="form__row">
+        <div class="form__group">
+          <label class="form__label">Category *</label>
+          <select name="category" class="form__input" required>
+            <option value="">Select Category</option>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat %>" <%= event?.category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form__group">
+          <label class="form__label">Status</label>
+          <select name="status" class="form__input">
+            <% ['upcoming','active','sold_out','cancelled','completed'].forEach(s => { %>
+              <option value="<%= s %>" <%= event?.status === s ? 'selected' : '' %>><%= s.replace('_',' ') %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <div class="form__group">
+        <label class="form__label">Description *</label>
+        <textarea name="description" class="form__input form__textarea" rows="6" required placeholder="Describe the event…"><%= event?.description || '' %></textarea>
+      </div>
+      <div class="form__group form__group--check">
+        <input type="checkbox" name="featured" id="featured" value="true" <%= event?.featured ? 'checked' : '' %> />
+        <label for="featured">Feature this event on the homepage</label>
+      </div>
+    </div>
+
+    <div class="form__section">
+      <h3>Date &amp; Time</h3>
+      <div class="form__row">
+        <div class="form__group">
+          <label class="form__label">Start Date &amp; Time *</label>
+          <input type="datetime-local" name="date" class="form__input" required
+            value="<%= event?.date ? new Date(event.date).toISOString().slice(0,16) : '' %>" />
+        </div>
+        <div class="form__group">
+          <label class="form__label">End Date &amp; Time</label>
+          <input type="datetime-local" name="endDate" class="form__input"
+            value="<%= event?.endDate ? new Date(event.endDate).toISOString().slice(0,16) : '' %>" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form__section">
+      <h3>Venue</h3>
+      <div class="form__row">
+        <div class="form__group">
+          <label class="form__label">Venue Name *</label>
+          <input type="text" name="venue[name]" class="form__input" value="<%= event?.venue?.name || '' %>" required placeholder="e.g. Sandton Convention Centre" />
+        </div>
+        <div class="form__group">
+          <label class="form__label">City *</label>
+          <input type="text" name="venue[city]" class="form__input" value="<%= event?.venue?.city || '' %>" required placeholder="e.g. Johannesburg" />
+        </div>
+      </div>
+      <div class="form__group">
+        <label class="form__label">Address *</label>
+        <input type="text" name="venue[address]" class="form__input" value="<%= event?.venue?.address || '' %>" required placeholder="Full street address" />
+      </div>
+      <div class="form__group">
+        <label class="form__label">Province</label>
+        <input type="text" name="venue[province]" class="form__input" value="<%= event?.venue?.province || 'Gauteng' %>" placeholder="e.g. Gauteng" />
+      </div>
+    </div>
+
+    <div class="form__section">
+      <h3>Ticketing</h3>
+      <div class="form__row">
+        <div class="form__group">
+          <label class="form__label">Total Capacity *</label>
+          <input type="number" name="ticketCapacity" class="form__input" value="<%= event?.ticketCapacity || '' %>" required min="1" placeholder="e.g. 500" />
+        </div>
+        <div class="form__group">
+          <label class="form__label">Ticket Price (R) *</label>
+          <input type="number" name="ticketPrice" class="form__input" value="<%= event?.ticketPrice ?? '' %>" required min="0" step="0.01" placeholder="e.g. 250.00 (0 for free)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form__section">
+      <h3>Event Image</h3>
+      <% if (event?.image && event.image !== '/images/default-event.jpg') { %>
+        <div class="form__group">
+          <img src="<%= event.image %>" alt="Current image" class="admin-img-preview" />
+          <small>Current image. Upload below to replace.</small>
+        </div>
+      <% } %>
+      <div class="form__group">
+        <label class="form__label">Upload Image</label>
+        <input type="file" name="image" class="form__input" accept="image/*" />
+        <small class="form__hint">JPEG, PNG, WebP — max 5MB</small>
+      </div>
+    </div>
+
+    <div class="form__actions">
+      <button type="submit" class="btn btn--primary btn--lg"><%= event ? 'Update Event' : 'Create Event' %></button>
+      <a href="/admin/events" class="btn btn--outline btn--lg">Cancel</a>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | <%= appName %></title>
+  <meta name="description" content="Advanced Events – South Africa's premier event management & ticketing platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">
+        <span class="nav__logo-mark">AE</span>
+        <span class="nav__logo-text">Advanced Events</span>
+      </a>
+      <button class="nav__hamburger" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="/" class="nav__link">Home</a></li>
+        <li><a href="/events" class="nav__link">Events</a></li>
+        <li><a href="/contact" class="nav__link">Contact</a></li>
+        <% if (user) { %>
+          <li><a href="/dashboard" class="nav__link">My Tickets</a></li>
+          <% if (isAdmin) { %>
+            <li><a href="/admin/dashboard" class="nav__link nav__link--admin">Admin</a></li>
+          <% } %>
+          <li>
+            <form action="/auth/logout" method="POST" style="display:inline">
+              <button type="submit" class="nav__link nav__link--btn">Sign Out</button>
+            </form>
+          </li>
+        <% } else { %>
+          <li><a href="/auth/login" class="nav__link">Sign In</a></li>
+          <li><a href="/auth/register" class="btn btn--sm btn--primary">Get Started</a></li>
+        <% } %>
+        <li>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <span class="theme-toggle__icon">☀</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  <% if (success && success.length) { %>
+    <div class="toast toast--success" id="toast">
+      <span class="toast__icon">✓</span>
+      <span><%= success[0] %></span>
+      <button class="toast__close" onclick="this.parentElement.remove()">×</button>
+    </div>
+  <% } %>
+  <% if (error && error.length) { %>
+    <div class="toast toast--error" id="toast">
+      <span class="toast__icon">✕</span>
+      <span><%= error[0] %></span>
+      <button class="toast__close" onclick="this.parentElement.remove()">×</button>
+    </div>
+  <% } %>
+  <% if (info && info.length) { %>
+    <div class="toast toast--info" id="toast">
+      <span class="toast__icon">ℹ</span>
+      <span><%= info[0] %></span>
+      <button class="toast__close" onclick="this.parentElement.remove()">×</button>
+    </div>
+  <% } %>
+
+  <!-- Main Content -->
+  <main class="main">
+    <%- body %>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <span class="nav__logo-mark">AE</span>
+          <p>Advanced Events (Pty) Ltd<br/>South Africa's premier event platform.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="/events">Browse Events</a></li>
+            <li><a href="/auth/register">Create Account</a></li>
+            <li><a href="/dashboard">My Tickets</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contact</h4>
+          <p>📍 Johannesburg, South Africa</p>
+          <p>✉️ hello@advancedevents.co.za</p>
+          <p>📞 +27 11 000 0000</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; <%= new Date().getFullYear() %> Advanced Events (Pty) Ltd. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

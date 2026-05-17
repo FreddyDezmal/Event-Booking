@@ -1,0 +1,47 @@
+<!-- views/auth/register.ejs -->
+<div class="auth-form">
+  <h1 class="auth-form__title">Create Account</h1>
+  <p class="auth-form__subtitle">Join thousands booking events on Advanced Events</p>
+
+  <form action="/auth/register" method="POST" class="form" novalidate>
+    <div class="form__row">
+      <div class="form__group">
+        <label class="form__label" for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstName" class="form__input" required placeholder="Jane" autocomplete="given-name" />
+      </div>
+      <div class="form__group">
+        <label class="form__label" for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName" class="form__input" required placeholder="Smith" autocomplete="family-name" />
+      </div>
+    </div>
+    <div class="form__group">
+      <label class="form__label" for="email">Email Address</label>
+      <input type="email" name="email" id="email" class="form__input" required placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <div class="form__group">
+      <label class="form__label" for="phone">Phone Number <small>(optional)</small></label>
+      <input type="tel" name="phone" id="phone" class="form__input" placeholder="+27 82 000 0000" autocomplete="tel" />
+    </div>
+    <div class="form__group">
+      <label class="form__label" for="password">Password</label>
+      <div class="form__input-wrap">
+        <input type="password" name="password" id="password" class="form__input" required placeholder="Min. 8 chars, 1 uppercase, 1 number" autocomplete="new-password" />
+        <button type="button" class="form__eye" onclick="togglePassword('password', this)">👁</button>
+      </div>
+      <div class="form__strength" id="strengthBar"></div>
+    </div>
+    <div class="form__group">
+      <label class="form__label" for="confirmPassword">Confirm Password</label>
+      <input type="password" name="confirmPassword" id="confirmPassword" class="form__input" required placeholder="Repeat your password" autocomplete="new-password" />
+    </div>
+    <div class="form__group form__group--check">
+      <input type="checkbox" name="terms" id="terms" required />
+      <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+    </div>
+    <button type="submit" class="btn btn--primary btn--full btn--lg">Create Account</button>
+  </form>
+
+  <p class="auth-form__footer">
+    Already have an account? <a href="/auth/login">Sign in →</a>
+  </p>
+</div>

@@ -1,0 +1,106 @@
+<!-- views/contact/index.ejs -->
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-header__title">Contact Us</h1>
+    <p class="page-header__subtitle">We'd love to hear from you. We typically respond within 24 hours.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Form -->
+      <div class="contact-form-card">
+        <h2>Send an Enquiry</h2>
+        <form action="/contact" method="POST" class="form" novalidate>
+          <div class="form__row">
+            <div class="form__group">
+              <label class="form__label" for="name">Full Name *</label>
+              <input type="text" name="name" id="name" class="form__input" required
+                value="<%= user ? user.firstName + ' ' + user.lastName : '' %>" placeholder="Your full name" />
+            </div>
+            <div class="form__group">
+              <label class="form__label" for="email">Email Address *</label>
+              <input type="email" name="email" id="email" class="form__input" required
+                value="<%= user ? user.email : '' %>" placeholder="you@example.com" />
+            </div>
+          </div>
+          <div class="form__row">
+            <div class="form__group">
+              <label class="form__label" for="phone">Phone Number</label>
+              <input type="tel" name="phone" id="phone" class="form__input" placeholder="+27 82 000 0000" />
+            </div>
+            <div class="form__group">
+              <label class="form__label" for="category">Enquiry Type</label>
+              <select name="category" id="category" class="form__input">
+                <% ['General','Booking','Technical','Refund','Partnership','Other'].forEach(cat => { %>
+                  <option value="<%= cat %>"><%= cat %></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="subject">Subject *</label>
+            <input type="text" name="subject" id="subject" class="form__input" required placeholder="How can we help?" />
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="message">Message *</label>
+            <textarea name="message" id="message" class="form__input form__textarea" rows="6" required placeholder="Tell us more…"></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary btn--lg">Send Message →</button>
+        </form>
+      </div>
+
+      <!-- Info -->
+      <div class="contact-info">
+        <div class="contact-info-card">
+          <h3>Get in Touch</h3>
+          <div class="contact-info-card__item">
+            <span>📍</span>
+            <div>
+              <strong>Address</strong>
+              <p>Sandton, Johannesburg<br/>Gauteng, South Africa</p>
+            </div>
+          </div>
+          <div class="contact-info-card__item">
+            <span>✉️</span>
+            <div>
+              <strong>Email</strong>
+              <p>hello@advancedevents.co.za</p>
+            </div>
+          </div>
+          <div class="contact-info-card__item">
+            <span>📞</span>
+            <div>
+              <strong>Phone</strong>
+              <p>+27 11 000 0000</p>
+            </div>
+          </div>
+          <div class="contact-info-card__item">
+            <span>🕐</span>
+            <div>
+              <strong>Office Hours</strong>
+              <p>Monday – Friday, 08:00 – 17:00 SAST</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-info-card contact-info-card--faq">
+          <h3>Common Questions</h3>
+          <div class="faq-item">
+            <strong>How do I cancel a booking?</strong>
+            <p>Go to My Dashboard and select the booking you want to cancel.</p>
+          </div>
+          <div class="faq-item">
+            <strong>Will I get a refund?</strong>
+            <p>Refunds are processed within 5–7 business days depending on your bank.</p>
+          </div>
+          <div class="faq-item">
+            <strong>Can I transfer my ticket?</strong>
+            <p>Contact us with your booking reference and we'll assist you.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

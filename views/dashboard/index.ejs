@@ -1,0 +1,121 @@
+<!-- views/dashboard/index.ejs -->
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-header__title">My Dashboard</h1>
+    <p class="page-header__subtitle">Welcome back, <%= user.firstName %>! Here's your event overview.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Stats Cards -->
+    <div class="user-stats">
+      <div class="stat-card">
+        <div class="stat-card__icon">🎟</div>
+        <div class="stat-card__value"><%= userStats.totalBookings || 0 %></div>
+        <div class="stat-card__label">Total Bookings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon">🎫</div>
+        <div class="stat-card__value"><%= userStats.totalTickets || 0 %></div>
+        <div class="stat-card__label">Tickets Purchased</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon">💰</div>
+        <div class="stat-card__value">R <%= (userStats.totalSpent || 0).toLocaleString('en-ZA') %></div>
+        <div class="stat-card__label">Total Spent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon">📅</div>
+        <div class="stat-card__value"><%= upcomingBookings.length %></div>
+        <div class="stat-card__label">Upcoming Events</div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Upcoming Bookings -->
+      <div class="dashboard-section">
+        <h2 class="dashboard-section__title">Upcoming Events</h2>
+        <% if (upcomingBookings.length) { %>
+          <div class="booking-list">
+            <% upcomingBookings.forEach(booking => { %>
+              <div class="booking-item">
+                <div class="booking-item__img">
+                  <img src="<%= booking.event?.image || '/images/default-event.jpg' %>" alt="<%= booking.event?.title %>" />
+                </div>
+                <div class="booking-item__info">
+                  <h3><%= booking.event?.title || 'Event Deleted' %></h3>
+                  <p>📅 <%= booking.event ? new Date(booking.event.date).toLocaleDateString('en-ZA', { weekday:'short', day:'numeric', month:'short' }) : 'N/A' %></p>
+                  <p>🎟 <%= booking.quantity %> ticket(s) · <span class="status-badge status-badge--<%= booking.status %>"><%= booking.status %></span></p>
+                </div>
+                <div class="booking-item__actions">
+                  <a href="/bookings/<%= booking._id %>" class="btn btn--sm btn--outline">View</a>
+                  <% if (booking.status === 'confirmed') { %>
+                    <form action="/bookings/<%= booking._id %>/cancel" method="POST" onsubmit="return confirm('Cancel this booking?')">
+                      <button class="btn btn--sm btn--danger">Cancel</button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="empty-state empty-state--sm">
+            <p>No upcoming bookings. <a href="/events">Browse events →</a></p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Discover Events Sidebar -->
+      <div class="dashboard-section">
+        <h2 class="dashboard-section__title">Discover Events</h2>
+        <% upcomingEvents.forEach(event => { %>
+          <a href="/events/<%= event.slug %>" class="discover-card">
+            <img src="<%= event.image || '/images/default-event.jpg' %>" alt="<%= event.title %>" class="discover-card__img" />
+            <div class="discover-card__info">
+              <span class="discover-card__date"><%= new Date(event.date).toLocaleDateString('en-ZA', { day:'numeric', month:'short' }) %></span>
+              <span class="discover-card__title"><%= event.title %></span>
+              <span class="discover-card__price">
+                <% if (event.ticketPrice === 0) { %>Free<% } else { %>R <%= event.ticketPrice %><% } %>
+              </span>
+            </div>
+          </a>
+        <% }) %>
+        <a href="/events" class="btn btn--outline btn--full">View All Events →</a>
+      </div>
+    </div>
+
+    <!-- Past Bookings -->
+    <% if (pastBookings.length) { %>
+      <div class="dashboard-section">
+        <h2 class="dashboard-section__title">Past Bookings</h2>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Tickets</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% pastBookings.forEach(booking => { %>
+                <tr>
+                  <td><%= booking.event?.title || '—' %></td>
+                  <td><%= booking.event ? new Date(booking.event.date).toLocaleDateString('en-ZA') : '—' %></td>
+                  <td><%= booking.quantity %></td>
+                  <td>R <%= booking.totalPrice.toLocaleString('en-ZA') %></td>
+                  <td><span class="status-badge status-badge--<%= booking.status %>"><%= booking.status %></span></td>
+                  <td><a href="/bookings/<%= booking._id %>" class="btn btn--sm btn--outline">View</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>

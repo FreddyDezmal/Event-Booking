@@ -1,0 +1,74 @@
+<!-- views/bookings/confirmation.ejs -->
+<div class="confirmation-page">
+  <div class="container container--narrow">
+    <!-- Success Header -->
+    <div class="confirmation-header">
+      <div class="confirmation-header__icon">✓</div>
+      <h1>Booking Confirmed!</h1>
+      <p>Your tickets are secured. See you at the event!</p>
+    </div>
+
+    <!-- Ticket Card -->
+    <div class="ticket-card">
+      <div class="ticket-card__top">
+        <div class="ticket-card__event-info">
+          <span class="event-card__category"><%= booking.event.category %></span>
+          <h2><%= booking.event.title %></h2>
+          <p>📅 <%= new Date(booking.event.date).toLocaleDateString('en-ZA', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) %></p>
+          <p>📍 <%= booking.event.venue.name %>, <%= booking.event.venue.city %></p>
+        </div>
+        <div class="ticket-card__qr">
+          <% if (booking.qrCode) { %>
+            <img src="<%= booking.qrCode %>" alt="QR Code" class="ticket-card__qr-img" />
+          <% } %>
+          <small>Scan at entry</small>
+        </div>
+      </div>
+      <div class="ticket-card__divider">
+        <div class="ticket-card__hole ticket-card__hole--left"></div>
+        <div class="ticket-card__perforation"></div>
+        <div class="ticket-card__hole ticket-card__hole--right"></div>
+      </div>
+      <div class="ticket-card__bottom">
+        <div class="ticket-card__detail">
+          <span class="ticket-card__detail-label">Booking Ref</span>
+          <span class="ticket-card__detail-value ticket-card__detail-value--ref"><%= booking.bookingRef %></span>
+        </div>
+        <div class="ticket-card__detail">
+          <span class="ticket-card__detail-label">Attendee</span>
+          <span class="ticket-card__detail-value"><%= booking.attendeeName %></span>
+        </div>
+        <div class="ticket-card__detail">
+          <span class="ticket-card__detail-label">Tickets</span>
+          <span class="ticket-card__detail-value"><%= booking.quantity %></span>
+        </div>
+        <div class="ticket-card__detail">
+          <span class="ticket-card__detail-label">Total Paid</span>
+          <span class="ticket-card__detail-value">R <%= booking.totalPrice.toLocaleString('en-ZA') %></span>
+        </div>
+        <div class="ticket-card__detail">
+          <span class="ticket-card__detail-label">Status</span>
+          <span class="status-badge status-badge--confirmed"><%= booking.status %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="confirmation-actions">
+      <button onclick="window.print()" class="btn btn--outline">🖨 Print Ticket</button>
+      <a href="/dashboard" class="btn btn--primary">View All Bookings</a>
+      <a href="/events" class="btn btn--outline">Browse More Events</a>
+    </div>
+
+    <!-- Info -->
+    <div class="confirmation-info">
+      <h3>What's Next?</h3>
+      <ul>
+        <li>📧 A confirmation has been sent to <strong><%= booking.attendeeEmail %></strong></li>
+        <li>📱 Show your QR code at the venue entrance</li>
+        <li>⏰ Arrive 15 minutes before the event starts</li>
+        <li>📞 Need help? <a href="/contact">Contact us</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<!-- views/admin/enquiries.ejs -->
+<div class="admin-page-header">
+  <h2>Enquiries</h2>
+  <div class="admin-filter-bar">
+    <a href="/admin/enquiries" class="btn btn--sm <%= filterStatus === 'all' ? 'btn--primary' : 'btn--outline' %>">All</a>
+    <a href="/admin/enquiries?status=new" class="btn btn--sm <%= filterStatus === 'new' ? 'btn--primary' : 'btn--outline' %>">New</a>
+    <a href="/admin/enquiries?status=in_progress" class="btn btn--sm <%= filterStatus === 'in_progress' ? 'btn--primary' : 'btn--outline' %>">In Progress</a>
+    <a href="/admin/enquiries?status=resolved" class="btn btn--sm <%= filterStatus === 'resolved' ? 'btn--primary' : 'btn--outline' %>">Resolved</a>
+  </div>
+</div>
+
+<% if (enquiries.length) { %>
+  <div class="enquiries-list">
+    <% enquiries.forEach(e => { %>
+      <div class="enquiry-card enquiry-card--<%= e.status %>">
+        <div class="enquiry-card__header">
+          <div class="enquiry-card__from">
+            <strong><%= e.name %></strong>
+            <span><%= e.email %></span>
+            <% if (e.phone) { %><span><%= e.phone %></span><% } %>
+          </div>
+          <div class="enquiry-card__meta">
+            <span class="status-badge status-badge--<%= e.status %>"><%= e.status.replace('_',' ') %></span>
+            <span class="enquiry-card__category"><%= e.category %></span>
+            <span class="enquiry-card__date"><%= new Date(e.createdAt).toLocaleDateString('en-ZA') %></span>
+          </div>
+        </div>
+        <div class="enquiry-card__body">
+          <h4><%= e.subject %></h4>
+          <p><%= e.message %></p>
+        </div>
+        <% if (e.adminNotes) { %>
+          <div class="enquiry-card__notes">
+            <strong>Admin Notes:</strong> <%= e.adminNotes %>
+          </div>
+        <% } %>
+        <form action="/admin/enquiries/<%= e._id %>?_method=PATCH" method="POST" class="enquiry-card__actions form">
+          <select name="status" class="form__input form__input--sm">
+            <% ['new','in_progress','resolved','closed'].forEach(s => { %>
+              <option value="<%= s %>" <%= e.status === s ? 'selected' : '' %>><%= s.replace('_',' ') %></option>
+            <% }) %>
+          </select>
+          <input type="text" name="adminNotes" class="form__input form__input--sm" placeholder="Add notes…" value="<%= e.adminNotes || '' %>" />
+          <button class="btn btn--sm btn--primary">Update</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="empty-state"><p>No enquiries found.</p></div>
+<% } %>
