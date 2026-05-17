@@ -68,7 +68,6 @@ app.use(session({
   },
   proxy: true, // trust first proxy (for secure cookies behind proxies/load balancers)
 }));
-const app = express();
 app.set('trust proxy', 1);
 
 app.use(flash());
