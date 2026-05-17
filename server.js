@@ -49,6 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('trust proxy', 1); // trust first proxy for secure cookies behind proxies/load balancers
 
 // ── Session ───────────────────────────────────────────────────
 app.use(session({
