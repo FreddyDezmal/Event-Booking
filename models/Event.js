@@ -43,7 +43,12 @@ const eventSchema = new mongoose.Schema(
       required: [true, 'Ticket capacity is required'],
       min: [1, 'Capacity must be at least 1'],
     },
-    
+    ticketsRemaining: {
+    type: Number,
+      default: function () {
+        return this.ticketCapacity;
+      }
+    },
     ticketPrice: {
       type: Number,
       required: [true, 'Ticket price is required'],

@@ -12,10 +12,11 @@
 
       <!-- Compute remaining tickets safely -->
       <%
-        const remaining = Math.max(
-          0,
-          (event.ticketCapacity || 0) - (event.totalBookings || 0)
-        );
+        const capacity = Number(event.ticketCapacity) || 0;
+        const booked = Number(event.totalBookings) || 0;
+
+        const remaining = Math.max(0, capacity - booked);
+        const maxQty = Math.min(remaining, 10);
       %>
 
       <!-- Booking Form -->
@@ -38,7 +39,7 @@
                 class="ticket-qty__input"
                 value="1"
                 min="1"
-                max="<%= remaining %>"
+                max="<%= maxQty %>"
                 readonly
               />
 
@@ -46,7 +47,7 @@
             </div>
 
             <small class="form__hint">
-              Max <%= remaining %> per booking
+              Max <%= maxQty %> per booking
             </small>
           </div>
 
@@ -163,7 +164,7 @@
 
 <script>
   const price = <%= event.ticketPrice %>;
-  const maxQty = <%= Math.min(remaining, 10) %>;
+  const maxQty = <%= maxQty %>;
 
   const qtyInput = document.getElementById('quantity');
   const summaryQty = document.getElementById('summaryQty');
