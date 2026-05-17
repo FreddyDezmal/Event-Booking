@@ -92,7 +92,7 @@ app.use((req, res, next) => {
 
 // ── Routes ────────────────────────────────────────────────────
 app.use('/', require('./routes/index'));
-app.use('/auth', authLimiter, require('./routes/auth'));
+app.use('/auth', require('./routes/auth'));
 app.use('/events', require('./routes/events'));
 app.use('/bookings', require('./routes/bookings'));
 app.use('/dashboard', require('./routes/dashboard'));
