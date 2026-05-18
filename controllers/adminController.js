@@ -122,7 +122,7 @@ exports.createEvent = async (req, res, next) => {
       ticketsRemaining: parseInt(req.body.ticketCapacity),
     };
     if (req.file) {
-      eventData.image = `/uploads/events/${req.file.filename}`;
+      eventData.image = req.file.path;
     }
     await Event.create(eventData);
     req.flash('success', 'Event created successfully!');
@@ -158,7 +158,7 @@ exports.updateEvent = async (req, res, next) => {
     if (!event) return res.status(404).render('errors/404', { title: 'Event Not Found' });
 
     const updatedData = { ...req.body };
-    if (req.file) updatedData.image = `/uploads/events/${req.file.filename}`;
+    if (req.file) updatedData.image = req.file.path;
 
     // Handle capacity change — adjust ticketsRemaining
     if (req.body.ticketCapacity && parseInt(req.body.ticketCapacity) !== event.ticketCapacity) {
